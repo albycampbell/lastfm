@@ -2,15 +2,16 @@
 # last fm weekly artists #
 ##########################
 
+# top 10 weekly artists to barchart
+# barchart messy if any more than 10 
+
 #!/usr/bin/perl
 use strict ;
 use warnings ;
 use LWP::UserAgent;
 use JSON;
 use Config::Tiny;
-use Data::Dumper;
-
-# username and api_key in .lastfm.cnf configuration file - home directory
+use GD::Graph::bars;
 
 my $config_file = "$ENV{HOME}/.lastfm.cnf";
 die "$config_file not there" unless -e $config_file;
@@ -20,13 +21,53 @@ my $config = Config::Tiny->read($config_file);
 my $user    = $config->{lastfm}->{user};
 my $api_key = $config->{lastfm}->{api_key};
                   
-my $url = "http://ws.audioscrobbler.com/2.0/?method=user.getweeklyartistchart&user=$user&api_key=$api_key&format=json";
+my $base_url    =  "http://ws.audioscrobbler.com/2.0";
+my $method_url  =  "method=user.getweeklyartistchart";
+my $format      = "json";
+my $user_passwd = "user=$user&api_key=$api_key&format=json";
 
-my $ua = LWP::UserAgent->new();
-my $data = $ua->get($url);
-my $json = $data->decoded_content;
-my $perl_data_structure = decode_json($json);
+my $request_url = "$base_url/?$method_url&user=$user&api_key=$api_key&format=$format";
 
-print Dumper ($perl_data_structure),"\n";
+# send the request and decode json to perl data structure
+# not too much held in memory - no need for content_reference
+# or write to disk
+my $ua        = LWP::UserAgent->new();
+my $request   = $ua->get($request_url);
+my $json      = $request->decoded_content;
+my $perl_data = decode_json($json);
 
-exit ;
+my (@artists, @playcounts);
+
+# only need the top 10 weekly artists in barchart
+my $x = 0;
+DATA:
+foreach my $thing ( @{$perl_data->{weeklyartistchart}->{artist} } ) {
+$x++;
+push (@artists,$thing->{'name'});
+push (@playcounts,$thing->{'playcount'});
+# exit when 10 are reached
+last DATA if $x == 10;
+}
+
+# artists and playcounts to bar chart
+# create the layout
+my $data = GD::Graph::Data->new( [ \@artists,\@playcounts ] );
+my $graph =  GD::Graph::bars->new();
+
+$graph->set(
+            x_label           => 'ARTISTS',
+	        y_label           => 'PLAYCOUNT',
+            x_labels_vertical => 1,
+            bar_spacing       => 1,
+            title   => 'Last FM scrobbled data',
+           ) or die $graph->error;
+
+$graph->plot($data) or die $graph->error;
+
+# barchart to image file
+my $file = 'LastFMTest.png';
+open (my $picture,'>',$file) or die "Cannot open file $file $!";
+binmode $picture;
+print $picture $graph->gd->png;
+close $picture;
+exit;
