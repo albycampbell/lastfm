@@ -23,11 +23,11 @@ my $user    = $config->{lastfm}->{user};
 my $api_key = $config->{lastfm}->{api_key};
                   
 my $base_url    = "http://ws.audioscrobbler.com/2.0";
-my $method_url  = "method=user.getweeklyartistchart";
+my $method_url  = "user.getweeklyartistchart";
 my $format      = "json";
 my $user_passwd = "user=$user&api_key=$api_key&format=$format";
 
-my $request_url = "$base_url/?$method_url&user=$user&api_key=$api_key&format=$format";
+my $request_url = "$base_url/?method=$method_url&user=$user&api_key=$api_key&format=$format";
 
 # send the request and decode json to perl data structure
 # not too much held in memory - no need for content_reference
