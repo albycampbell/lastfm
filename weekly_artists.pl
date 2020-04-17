@@ -3,7 +3,8 @@
 ##########################
 
 # top 10 weekly artists to barchart
-# barchart messy if any more than 10 
+# barchart messy if any more than 10
+# not using Last FM cpan module
 
 #!/usr/bin/perl
 use strict ;
@@ -21,10 +22,10 @@ my $config = Config::Tiny->read($config_file);
 my $user    = $config->{lastfm}->{user};
 my $api_key = $config->{lastfm}->{api_key};
                   
-my $base_url    =  "http://ws.audioscrobbler.com/2.0";
-my $method_url  =  "method=user.getweeklyartistchart";
+my $base_url    = "http://ws.audioscrobbler.com/2.0";
+my $method_url  = "method=user.getweeklyartistchart";
 my $format      = "json";
-my $user_passwd = "user=$user&api_key=$api_key&format=json";
+my $user_passwd = "user=$user&api_key=$api_key&format=$format";
 
 my $request_url = "$base_url/?$method_url&user=$user&api_key=$api_key&format=$format";
 
@@ -56,7 +57,7 @@ my $graph =  GD::Graph::bars->new();
 
 $graph->set(
             x_label           => 'ARTISTS',
-	        y_label           => 'PLAYCOUNT',
+	    y_label           => 'PLAYCOUNT',
             x_labels_vertical => 1,
             bar_spacing       => 1,
             title   => 'Last FM scrobbled data',
