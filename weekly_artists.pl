@@ -10,7 +10,7 @@
 use strict ;
 use warnings ;
 use LWP::UserAgent;
-use JSON;
+use JSON qw(decode);
 use Config::Tiny;
 use GD::Graph::bars;
 
