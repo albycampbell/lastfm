@@ -2,8 +2,7 @@
 # last fm weekly artists #
 ##########################
 
-# top 10 weekly artists to barchart
-# barchart messy if any more than 10
+# top 5 weekly artists to barchart
 # not using Last FM cpan module
 
 #!/usr/bin/perl
@@ -41,15 +40,15 @@ my $perl_data = decode_json($json);
 
 my (@artists, @playcounts);
 
-# only need the top 10 weekly artists in barchart
+# only need the top 5 weekly artists in barchart
 my $x = 0;
 DATA:
 foreach my $thing ( @{$perl_data->{weeklyartistchart}->{artist} } ) {
 $x++;
 push (@artists,$thing->{'name'});
 push (@playcounts,$thing->{'playcount'});
-# exit when 10 are reached
-last DATA if $x == 10;
+# exit when 5 is reached
+last DATA if $x == 5;
 }
 
 # artists and playcounts to bar chart
@@ -59,7 +58,7 @@ my $graph =  GD::Graph::bars->new();
 
 $graph->set(
             x_label           => 'ARTISTS',
-	    y_label           => 'PLAYCOUNT',
+	        y_label           => 'PLAYCOUNT',
             x_labels_vertical => 1,
             bar_spacing       => 1,
             title   => 'Last FM scrobbled data',
