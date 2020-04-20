@@ -10,9 +10,12 @@
 use strict ;
 use warnings ;
 use LWP::UserAgent;
-use JSON qw(decode);
+use JSON qw(decode_json);
 use Config::Tiny;
+use POSIX qw (strftime);
 use GD::Graph::bars;
+
+my $date = strftime "%e-%b-%Y",localtime;
 
 my $config_file = "$ENV{HOME}/.lastfm.cnf";
 die "$config_file not there" unless -e $config_file;
@@ -25,7 +28,6 @@ my $api_key = $config->{lastfm}->{api_key};
 my $base_url    = "http://ws.audioscrobbler.com/2.0";
 my $method_url  = "user.getweeklyartistchart";
 my $format      = "json";
-my $user_passwd = "user=$user&api_key=$api_key&format=$format";
 
 my $request_url = "$base_url/?method=$method_url&user=$user&api_key=$api_key&format=$format";
 
@@ -66,7 +68,7 @@ $graph->set(
 $graph->plot($data) or die $graph->error;
 
 # barchart to image file
-my $file = 'LastFMTest.png';
+my $file = "WeeklyArtists_$date.png";
 open (my $picture,'>',$file) or die "Cannot open file $file $!";
 binmode $picture;
 print $picture $graph->gd->png;
