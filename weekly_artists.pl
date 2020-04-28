@@ -4,6 +4,7 @@
 
 # top 5 weekly artists to barchart
 # not using Last FM cpan module
+# updated with show values - numeric value above bar
 
 #!/usr/bin/perl
 use strict ;
@@ -42,13 +43,13 @@ my (@artists, @playcounts);
 
 # only need the top 5 weekly artists in barchart
 my $x = 0;
-DATUM:
+DATA:
 foreach my $thing ( @{$perl_data->{weeklyartistchart}->{artist} } ) {
 $x++;
 push (@artists,$thing->{'name'});
 push (@playcounts,$thing->{'playcount'});
 # exit when 5 is reached
-last DATUM if $x == 5;
+last DATA if $x == 5;
 }
 
 # artists and playcounts to bar chart
@@ -56,12 +57,14 @@ last DATUM if $x == 5;
 my $data = GD::Graph::Data->new( [ \@artists,\@playcounts ] );
 my $graph =  GD::Graph::bars->new();
 
+
 $graph->set(
             x_label           => 'ARTISTS',
-	    y_label           => 'PLAYCOUNT',
+	        y_label           => 'PLAYCOUNT',
             x_labels_vertical => 1,
             bar_spacing       => 1,
-            title   => 'Last FM scrobbled data',
+            show_values       => 1,
+            title   => "Last.fm data $date",
            ) or die $graph->error;
 
 $graph->plot($data) or die $graph->error;
