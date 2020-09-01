@@ -54,7 +54,7 @@ last DATUM if $x == 5;
 
 # artists and playcounts to bar chart
 # create the layout
-my $data = GD::Graph::Data->new( [ \@artists,\@playcounts ] );
+my $data  =  GD::Graph::Data->new( [ \@artists,\@playcounts ] );
 my $graph =  GD::Graph::bars->new();
 
 
@@ -64,13 +64,13 @@ $graph->set(
             x_labels_vertical => 1,
             bar_spacing       => 1,
             show_values       => 1,
-            title   => "Last.fm data $date",
+            title             => "Last.fm data $date",
            ) or die $graph->error;
 
 $graph->plot($data) or die $graph->error;
 
 # barchart to image file
-my $file = "WeeklyArtists_$date.png";
+my $file = "LastFM_Weekly_Artists.$date.png";
 open (my $picture,'>',$file) or die "Cannot open file $file $!";
 binmode $picture;
 print $picture $graph->gd->png;
