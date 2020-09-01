@@ -43,13 +43,13 @@ my (@artists, @playcounts);
 
 # only need the top 5 weekly artists in barchart
 my $x = 0;
-DATA:
+DATUM:
 foreach my $thing ( @{$perl_data->{weeklyartistchart}->{artist} } ) {
 $x++;
 push (@artists,$thing->{'name'});
 push (@playcounts,$thing->{'playcount'});
 # exit when 5 is reached
-last DATA if $x == 5;
+last DATUM if $x == 5;
 }
 
 # artists and playcounts to bar chart
