@@ -60,7 +60,7 @@ my $graph =  GD::Graph::bars->new();
 
 $graph->set(
             x_label           => 'ARTISTS',
-	        y_label           => 'PLAYCOUNT',
+	    y_label           => 'PLAYCOUNT',
             x_labels_vertical => 1,
             bar_spacing       => 1,
             show_values       => 1,
